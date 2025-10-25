@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <title>StarLightAR Opening</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 390px;
+    height: 844px;
+    margin: 0 auto;
+    background: black;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 背景夜景 */
+  #background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('night-bg.jpg') center/cover no-repeat;
+    filter: brightness(0.6);
+    animation: bgMove 20s linear infinite alternate;
+    z-index: 1;
+    transition: opacity 1.5s ease-in-out;
+  }
+
+  @keyframes bgMove {
+    from { transform: scale(1) translateY(0); }
+    to { transform: scale(1.05) translateY(-10px); }
+  }
+
+  /* 彈幕（在影片後面） */
+  .danmu {
+    position: absolute;
+    white-space: nowrap;
+    color: rgba(255,255,255,0.8);
+    font-size: 18px;
+    text-shadow: 0 0 8px rgba(255,255,255,0.6);
+    animation: fly linear forwards;
+    z-index: 2;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+  }
+
+  @keyframes fly {
+    from { transform: translateX(100vw); }
+    to { transform: translateX(-100vw); }
+  }
+
+  /* 女神影片 */
+  #comp {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 90%;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 1.5s ease-in-out;
+  }
+
+  /* 啟動按鈕 */
+  #startBtn {
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 30px;
+    font-size: 20px;
+    color: white;
+    background: rgba(255, 215, 0, 0.8);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: 6;
+    box-shadow: 0 0 15px rgba(255, 255, 150, 0.8);
+    transition: all 0.3s ease;
+  }
+
+  #startBtn:hover {
+    transform: translateX(-50%) scale(1.1);
+    background: rgba(255, 240, 180, 1);
+    color: black;
+  }
+
+  </style>
+</head>
+<body>
+  <div id="background"></div>
+  <div id="danmuContainer"></div>
+
+  <!-- 女神影片 -->
+  <video id="comp" src="comp.mp4" preload="auto"></video>
+
+  <!-- 開始掣 -->
+  <button id="startBtn">✨ 開 始 ✨</button>
+
+  <script>
+  // ===== 彈幕產生 =====
+  const container = document.getElementById("danmuContainer");
+  const words = [
+    "星光閃耀✨",
+    "Welcome to StarLightAR",
+    "香港電影之光🎬",
+    "Collect your rewards!",
+    "Enjoy the night🌙"
+  ];
+
+  setInterval(() => {
+    const d = document.createElement("div");
+    d.className = "danmu";
+    d.innerText = words[Math.floor(Math.random() * words.length)];
+    d.style.top = Math.random() * 700 + "px";
+    d.style.animationDuration = (6 + Math.random() * 5) + "s";
+    container.appendChild(d);
+
+    // 彈幕淡出後移除
+    setTimeout(() => {
+      d.style.opacity = "0";
+      setTimeout(() => d.remove(), 1000);
+    }, 9000);
+  }, 1000);
+
+  // ===== 撳掣播放影片 =====
+  const btn = document.getElementById("startBtn");
+  const video = document.getElementById("comp");
+
+  btn.addEventListener("click", () => {
+    btn.style.display = "none"; // 隱藏按鈕
+    video.play(); // 播放影片
+  });
+
+  // ===== 影片播完自動跳頁 =====
+  video.addEventListener("ended", () => {
+    window.location.href = "HomePage.html";
+  });
+  </script>
+</body>
+</html>
