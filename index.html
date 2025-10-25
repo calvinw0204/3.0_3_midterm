@@ -39,7 +39,7 @@
     font-size: 18px;
     text-shadow: 0 0 8px rgba(255,255,255,0.6);
     animation: fly linear forwards;
-    z-index: 2;
+    z-index: 2; /* 彈幕在背景上，影片下 */
     opacity: 1;
     transition: opacity 1s ease-in-out;
   }
@@ -49,15 +49,15 @@
     to { transform: translateX(-100vw); }
   }
 
-  /* 女神影片 */
+  /* 女神影片（鋪滿畫面） */
   #comp {
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 90%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 保持比例鋪滿 */
     z-index: 5;
-    pointer-events: none;
     opacity: 1;
     transition: opacity 1.5s ease-in-out;
   }
@@ -71,7 +71,7 @@
     padding: 12px 30px;
     font-size: 20px;
     color: white;
-    background: rgba(255, 215, 0, 0.8);
+    background: rgba(255, 215, 0, 0.85);
     border: none;
     border-radius: 30px;
     cursor: pointer;
@@ -93,7 +93,7 @@
   <div id="danmuContainer"></div>
 
   <!-- 女神影片 -->
-  <video id="comp" src="comp.mp4" preload="auto"></video>
+  <video id="comp" src="comp.mp4" preload="auto" playsinline></video>
 
   <!-- 開始掣 -->
   <button id="startBtn">✨ 開 始 ✨</button>
