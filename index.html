@@ -8,61 +8,97 @@
     body {
       margin: 0;
       background-color: black;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-    }
-
-    .video-container {
-      position: relative;
       width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      cursor: pointer; /* 整個畫面都可點 */
     }
 
-    video {
+    #lottieContainer {
+      position: absolute;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      display: block;
+      top: 0;
+      left: 0;
+      z-index: 5;
+      cursor: pointer;
     }
 
-    /* 點擊時短暫閃爍反饋 */
-    .video-container:active {
-      opacity: 0.9;
-      transition: opacity 0.2s;
+    /* 彈幕 */
+    .danmu {
+      position: absolute;
+      white-space: nowrap;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
+      text-shadow: 0 0 8px rgba(255,255,255,0.6);
+      animation: fly linear forwards;
+      z-index: 2;
+    }
+
+    @keyframes fly {
+      from { transform: translateX(100vw); }
+      to { transform: translateX(-100vw); }
     }
   </style>
 </head>
 <body>
-  <div class="video-container" id="videoContainer">
-    <video id="goddessVideo" preload="auto" muted playsinline>
-      <source src="Comp.mp4" type="video/mp4">
-      
-    </video>
-  </div>
+  <!-- 彈幕容器 -->
+  <div id="danmuContainer"></div>
+
+  <!-- Lottie 動畫容器 -->
+  <div id="lottieContainer"></div>
+
+  <!-- Lottie.js CDN -->
+  <script src="https://unpkg.com/lottie-web@5.12.0/build/player/lottie.min.js"></script>
 
   <script>
-    const video = document.getElementById("goddessVideo");
-    const container = document.getElementById("videoContainer");
+    // ===== 彈幕產生 =====
+    const container = document.getElementById("danmuContainer");
+    const words = [
+      "星光閃耀✨",
+      "Welcome to StarLightAR",
+      "香港電影之光🎬",
+      "Collect your rewards!",
+      "Enjoy the night🌙"
+    ];
 
-    // 預先載入影片第一幀
-    video.addEventListener("loadeddata", () => {
-      video.pause();
-      video.currentTime = 0;
+    setInterval(() => {
+      const d = document.createElement("div");
+      d.className = "danmu";
+      d.innerText = words[Math.floor(Math.random() * words.length)];
+      d.style.top = Math.random() * (window.innerHeight - 30) + "px";
+      d.style.animationDuration = (6 + Math.random() * 5) + "s";
+      container.appendChild(d);
+
+      // 彈幕淡出後移除
+      setTimeout(() => {
+        d.style.opacity = "0";
+        setTimeout(() => d.remove(), 1000);
+      }, 9000);
+    }, 1000);
+
+    // ===== Lottie 初始化 =====
+    const anim = lottie.loadAnimation({
+      container: document.getElementById('lottieContainer'),
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: 'CompJson.json' // Lottie JSON 檔
     });
 
-    // 點擊整個畫面播放影片
-    container.addEventListener("click", () => {
-      container.style.cursor = "default"; // 播放後移除手勢
-      video.play();
-    }, { once: true }); // 防止重複點擊
+    const lottieContainer = document.getElementById('lottieContainer');
+
+    // 點擊播放動畫
+    lottieContainer.addEventListener('click', () => {
+      lottieContainer.style.cursor = 'default';
+      anim.play();
+    }, { once: true });
 
     // 播放完自動跳頁
-    video.addEventListener("ended", () => {
-      window.location.href = "HomePage.html"; // 改成你的主頁名稱
+    anim.addEventListener('complete', () => {
+      window.location.href = "HomePage.html"; // 改成你的主頁
     });
   </script>
 </body>
